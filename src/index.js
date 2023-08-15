@@ -2,17 +2,28 @@ module.exports = function check(str, bracketsConfig) {
   // const bracketPairs = Object.fromEntries(bracketsConfig.map(item => item.reverse()));
   const bracketPairs = Object.fromEntries(JSON.parse(JSON.stringify(bracketsConfig)).map(item => item.reverse()));
   const openBrackets = Object.values(bracketPairs);
-  const closeBrackets = Object.keys(bracketPairs);
   let stackBracket = [];
 
-  for (let id = 0; id < str.length; id++) {
-    let item = str[id];
+  for (const item of str) {
+    let pair = bracketPairs[item];
+
     if (openBrackets.includes(item)) {
-      stackBracket.push(item);
+      if (stackBracket.length) {
+        let stackItemLast = stackBracket.slice(-1);
+        if (item == pair && item == stackItemLast) {
+          stackBracket.pop(item);
+          
+        } else {
+          stackBracket.push(item);
+        };
+
+      } else {
+        stackBracket.push(item);
+      };
+
     } else {
       if (stackBracket.length == 0) {return false};
       
-      let pair = bracketPairs[item];
       let stackItemLast = stackBracket.slice(-1);
       if (stackItemLast != pair) {
         return false;
@@ -28,41 +39,6 @@ module.exports = function check(str, bracketsConfig) {
     return true;
   };
 };
-
-function check (str, bracketsConfig) {
-  // const bracketPairs = Object.fromEntries(bracketsConfig.map(item => item.reverse()));
-  const bracketPairs = Object.fromEntries(JSON.parse(JSON.stringify(bracketsConfig)).map(item => item.reverse()));
-  const openBrackets = Object.values(bracketPairs);
-  const closeBrackets = Object.keys(bracketPairs);
-  let stackBracket = [];
-
-  for (let id = 0; id < str.length; id++) {
-    let item = str[id];
-    if (openBrackets.includes(item)) {
-      stackBracket.push(item);
-    } else {
-      if (stackBracket.length == 0) {return false};
-      
-      let pair = bracketPairs[item];
-      let stackItemLast = stackBracket.slice(-1);
-      if (stackItemLast != pair) {
-        return false;
-      } else {
-        stackBracket.pop(item);
-      };
-    };
-  };
-  console.log(stackBracket);
-  if (stackBracket.length) {
-    return false;
-  } else {
-    return true;
-  };
-
-};
-
-console.log( check ("||", [['(', ')'], ['[', ']'], ['{', '}'], ['|', '|']]) );
-// console.log( check ("|()|", [['(', ')'], ['[', ']'], ['{', '}'], ['|', '|']]) );
 
 // const myArray = [[1, 22222], [3, 33333]];
 // console.log("myArray", myArray);
